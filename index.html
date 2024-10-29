@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>龍潭美食抽獎</title>
+  <link rel="shortcut icon" href="./img/other/icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    .box1 {
+      height: 300px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .box2 {
+      height: 50px;
+      width: 50px;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1000;
+      border-radius: 50%;
+      border: 3px solid #ffffff;
+      background-color: #ffffff;
+      transition: border 0.4s;
+      transition: background-color 0.4s;
+      transition: height 0.1s;
+      transition: width 0.1s;
+      transition: right 0.1s;
+      transition: bottom 0.1s;
+    }
+
+    .box2:hover {
+      border: 3px solid #f78030;
+      background-color: #f78030;
+      height: 70px;
+      width: 70px;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .box3 {
+      height: 40px;
+      width: 180px;
+      bottom: 30px;
+      z-index: 100;
+      border-radius: 40px;
+      border: 3px solid #ffffff;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: medium;
+      font-weight: bold;
+      transition: border 0.4s;
+      transition: background-color 0.4s;
+      transition: height 0.2s;
+      transition: width 0.2s;
+      transition: bottom 0.2s;
+      transition: color 0.2s;
+      transition: font-size 0.05s;
+    }
+
+    .box3:hover {
+      border: 3px solid #f78030;
+      background-color: #f78030;
+      height: 70px;
+      width: 240px;
+      bottom: 20px;
+      color: #ffffff;
+      font-size: larger;
+    }
+
+    @keyframes slideRight {
+      from {
+        left: -200px;
+      }
+
+      to {
+        left: 0px;
+      }
+    }
+    .slide_in{
+      opacity: 0;
+      transform: translateX(-150%);
+      animation: slideIn 1s forwards;
+    }
+    @keyframes slideIn {
+      to{
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .popping{
+      animation: scaleAnimation 2.5s infinite;
+    }
+    @keyframes scaleAnimation {
+      0%{
+        transform: scale(1);
+      }
+      50%{
+        transform: scale(1.2);
+      }
+      100%{
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="top"></div>
+
+  <div id="cover"
+    class="position-fixed vw-100 vh-100"
+    style="background-color: #1b1b1bec; z-index: 500; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+    <img id="comic" class="slide_in" style="max-width: 70%; max-height: 70%;" src="./img/other/小故事_01_s.png">
+    <img class="popping" style="height: 120px; width: 120px; position: fixed; right: 300px; bottom: 90px;" src="./img/other/click.png">
+  </div>
+  <script>
+    //disable scroll
+    function disableScroll(event) {
+        event.preventDefault();
+    }
+    document.getElementById('cover').addEventListener('wheel', disableScroll, { passive: false });
+    //switch page
+    var comics = ["./img/other/小故事_01_s.png", "./img/other/小故事_02_s.png", "./img/other/小故事_03_s.png"];
+    var comic_pages = 0;
+    var comic_img = document.getElementById("comic");
+    comic_img.addEventListener("click", () => {
+      if(comic_pages==2){
+        window.location.href = "#top";
+        document.getElementById('cover').remove();
+      }
+      else{
+        comic_pages += 1;
+        comic_img.src = comics[comic_pages]; 
+      }
+    });
+  </script>
+
+  <!--information btn-->
+  <div class="box3 position-absolute translate-middle-x start-50" id="info_btn">
+    <div>↓　　查看更多　　↓</div>
+  </div>
+  <script>
+    const info_btn = document.getElementById("info_btn");
+    info_btn.addEventListener("click", function () {
+      window.location.href = "#for19";
+    });
+  </script>
+  <!-- sound  Note: google ban the autoplay-->
+  <div id="audioContainer"></div>
+  <div class="box2 position-fixed" onclick="play()">
+    <img id="mute" src="./img/other/volume_mute.svg">
+  </div>
+  <script>
+    function play() {
+      var div = document.getElementById('audioContainer');
+      var img = document.getElementById('mute');
+      if (div.played) {
+        if (div.muted) {
+          var sound = document.getElementById('main_music');
+          div.muted = false;
+          sound.volume = 0.5;
+          img.src = "./img/other/musical_notes.svg";
+        }
+        else {
+          var sound = document.getElementById('main_music');
+          div.muted = true;
+          sound.volume = 0.0;
+          img.src = "./img/other/volume_mute.svg";
+        }
+      }
+      else {
+        var audio = document.createElement('audio');
+        div.played = true;
+        audio.src = './img/other/Sand_Castle.mp3';
+        audio.id = 'main_music';
+        audio.loop = true;
+        audio.autoplay = true;
+        audio.volume = 0.5;
+        document.getElementById('audioContainer').appendChild(audio);
+        div.muted = false;
+        img.src = "./img/other/musical_notes.svg";
+      }
+    }
+  </script>
+
+  <!--unity-->
+  <div style="max-width: 100%;">
+    <canvas id="unity-canvas" style="width: 100%;" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo1"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+    </div>
+    <script>
+      window.addEventListener("load", function () {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("ServiceWorker.js");
+        }
+      });
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function () {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/food_prize_build.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/food_prize_build.data",
+        frameworkUrl: buildUrl + "/food_prize_build.framework.js",
+        codeUrl: buildUrl + "/food_prize_build.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "food_prize",
+        productVersion: "0.1",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </div>
+
+  <!-- card -->
+  <div class="modal fade" id="jumpOut" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    onclick="dropback()">
+    <div class="modal-dialog d-flex align-items-center justify-content-center"
+      style="height: 50%; width: 50%; max-width: none; max-height: none;">
+      <div class="modal-content h-100">
+        <div class="modal-header">
+          <h2 class="modal-title position-absolute translate-middle-x start-50" id="modalTitle">Modal title</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row row-cols-2">
+          <div class="col h-100">
+            <div class="card h-100 position-relative">
+              <img id="modalImg" class="card-img-top m-auto" style="max-height: 100%; object-fit: contain;" src="">
+            </div>
+          </div>
+          <div class="col h-100">
+            <div class="card h-100">
+              <div id="modalText" class="card-text" style="font-size:x-large;"></div>
+            </div>
+          </div>
+        </div>
+        <!--<div class="modal-footer">
+          <span class="star-button " style="color: #FFD43B; font-size: 2rem;" onclick="toggleStar(this)"><i
+              class="far fa-star"></i></span>
+          <span class="like-button " style="color: #74C0FC; font-size: 2rem;" onclick="toggleLike(this)"><i
+              class="far fa-thumbs-up"></i></span>
+        </div>-->
+      </div>
+    </div>
+  </div>
+  </script>
+
+  <div style="background-image: url(./img/other/bg.png);">
+    <div class="row row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4" style="margin: 0 20vh; "
+      id="for19"></div>
+    <!--footer-->
+    <div style="height: 200px;" class="d-flex justify-content-center align-items-center">
+      <a href="#top">To top</a>
+      <style>
+        a {
+          color: #000000;
+        }
+      </style>
+    </div>
+  </div>
+  <!--footer-->
+  <div class="bg-black text-white position-relative" style="height: 80px;">
+    <p class="position-absolute top-50 start-50 translate-middle-x">© 九扇門</p>
+  </div>
+
+  <script> //auto generate 19 card
+    var text_f = [
+      ["傳香飯糰", "空"],
+      ["麥味登", "價位：100~180\n座位:不多, 間隔適中\n#早午餐最優解\n#種類豐富\n#走精緻路線"],
+      ["李東記肉骨茶", "價位：70~80\n座位：普通偏少\n#豬腳超大\n#湯很香…"],
+      ["7-11", "價位：30~130\n座位:多 （二樓有座位區)\n#會更新商品\n#種類多樣\n#愛珍時我的超人"],
+      ["煮夫麻辣關東煮", "空"],
+      ["鐵男自助餐", "價位：65~90\n座位：不算多但間格有點近\n#超划算\n#吃很飽\n#月底救星"],
+      ["幸福珈琲館", "價位：115~160\n座位:多 舒適\n#義大利麵好吃\n#有附飲料"],
+      ["越南料理", "價位：75～90\n座位：間隔近蠻多的\n#炒飯超大盤"],
+      ["北方園", "價位：50~110\n座位:多\n#平價大碗\n#內用紅茶很好喝"],
+      ["澤町拉麵丼飯", "空"],
+      ["緬梔花越南料理", "價位：75~150\n座位:不多\n#脆皮豬肉超好吃\n#河粉、米線、春捲也大推\n#貴有貴的道理"],
+      ["花路米", "價位：75～90\n座位：多\n#便宜大碗\n#配菜量很多\n#炸物主食好吃"],
+      ["早安有喜", "價位：50～200\n座位：多\n#品項很多\n#雖然有點貴但食物美味程度也是相對的！\n#店內環境舒服"],
+      ["十畝田", "價位：75～100\n座位：戶外座位有點少\n#超便宜還會打折\n#料好吃\n#點很多東西還不破百！"],
+      ["一村香", "價位：一般價位大概100～85\n座位：間隔很舒服基本都是大桌\n#炸豬排超香\n#裡面有賣玩具\n#有媽媽的感覺"],
+      ["科大早餐車", "價位：25～70\n座位：多（但會被搶完)\n#吐司夾蛋餅！\n#炸水餃\n#早餐首選"],
+      ["轉角美食館", "價位：85～100\n座位：多\n#日式料理\n#有家庭感\n#人有點多要候位"],
+      ["大頭小吃部", "價位：便宜高cp值\n座位：其實滿多的但搶不到😭\n#加排骨只要20！\n#月底救星"],
+      ["阿男滷肉飯", "價位：85～100\n座位：多\n#炒飯超級好吃\n#湯品飲料\n#分量適中"]
+    ];
+    var for19 = document.getElementById("for19");
+    for (let i = 1; i <= 19; i++) {
+      var div1 = document.createElement("div");
+      div1.classList.add('col');
+      div1.id = "div1";
+      for19.appendChild(div1);
+    }
+    for (let i = 1; i <= 19; i++) {
+      var div1 = document.getElementById("div1");
+      var div2 = document.createElement("div");
+      div2.classList.add('card');
+      div2.id = "div2";
+      div2.setAttribute("onclick", "switchContent(this)");
+      div2.setAttribute("data-bs-toggle", "modal");
+      div2.setAttribute("data-bs-target", "#jumpOut");
+      div1.appendChild(div2);
+      div1.id = "";
+    }
+    for (let i = 1; i <= 19; i++) {
+      var div2 = document.getElementById("div2");
+      var img = document.createElement("img");
+      var div3 = document.createElement("div");
+      var div4 = document.createElement("div");
+      img.src = `./img/food/f${i}.png`;
+      img.classList.add("card-img-top");
+      div2.appendChild(img);
+
+      div3.classList.add("card-body");
+      div3.id = "div3";
+      div2.appendChild(div3);
+
+      div4.classList.add("card-footer");
+      div4.id = "div4";
+      div2.appendChild(div4);
+      div2.id = "";
+    }
+    for (let i = 1; i <= 19; i++) {
+      var div3 = document.getElementById("div3");
+      var div4 = document.getElementById("div4");
+      var h4 = document.createElement("h4");
+      var p = document.createElement("p");
+      var small = document.createElement("small");
+      h4.classList.add('card-title');
+      h4.textContent = text_f[i - 1][0];
+      div3.appendChild(h4);
+      p.classList.add('card-text');
+      p.innerHTML = text_f[i - 1][1].replace(/\n/g, '<br>');
+      div3.appendChild(p);
+      small.classList.add('text-muted');
+      small.textContent = "點擊查看";
+      div4.appendChild(small);
+      div3.id = "";
+      div4.id = "";
+    }
+  </script>
+
+  <style>
+    .clicked {
+      background-color: black;
+      position: absolute;
+      z-index: 10;
+    }
+
+    .card {
+      height: 300px;
+    }
+
+    .card-body {
+      overflow: hidden;
+    }
+  </style>
+  <script>
+    function switchContent(card) {
+      const tTitle = document.getElementById('modalTitle');
+      const cTitle = card.querySelector('.card-title');
+      tTitle.textContent = cTitle.textContent;
+
+      const tImg = document.getElementById('modalImg');
+      const cImg = card.querySelector('.card-img-top');
+      tImg.src = cImg.src;
+
+      const tText = document.getElementById('modalText');
+      const cText = card.querySelector('.card-text');
+      tText.innerHTML = cText.innerHTML;
+
+      card.classList.add('clicked');
+      card.id = 'clicked';
+      card.style.display = 'none';
+    }
+    function dropback() {
+      var div = document.getElementById('clicked');
+      div.classList.remove('clicked');
+      div.removeAttribute('id');
+      div.style.display = 'flex';
+    }
+    function toggleStar(element) {
+      element.querySelector('i').classList.toggle('fas');
+      element.querySelector('i').classList.toggle('far');
+    }
+    function toggleLike(element) {
+      element.querySelector('i').classList.toggle('fas');
+      element.querySelector('i').classList.toggle('far');
+    }
+  </script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
